@@ -1,4 +1,4 @@
-.PHONY: install test exp1 exp2 exp3 exp4 exp5 exp6 all clean
+.PHONY: install test exp1 exp2 exp3 exp4 exp5 exp6 exp7 all clean
 
 install:
 	pip install -r requirements.txt
@@ -24,7 +24,10 @@ exp5:
 exp6:
 	TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 python -m experiments.exp6_significance --reuse_exp1
 
-all: test exp1 exp2 exp3 exp4 exp5 exp6
+exp7:
+	TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 python -m experiments.exp7_case_study
+
+all: test exp1 exp2 exp3 exp4 exp5 exp6 exp7
 
 clean:
 	rm -rf results/ __pycache__ .pytest_cache .coverage
