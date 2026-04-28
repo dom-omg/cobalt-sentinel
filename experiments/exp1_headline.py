@@ -2,10 +2,12 @@
 
 Usage:
     python -m experiments.exp1_headline
+    python -m experiments.exp1_headline --n_trials 50 --seed 42
 """
 
 from __future__ import annotations
 
+import argparse
 import os
 import sys
 
@@ -18,6 +20,14 @@ N_TRIALS = 500
 SEED = 42
 OUTPUT_DIR = "results/exp1"
 DRIFT_SCENARIOS = ["phishing_step", "phishing_gradual", "financial_step", "financial_gradual"]
+
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="SS-CBD headline experiment")
+    parser.add_argument("--n_trials", type=int, default=N_TRIALS)
+    parser.add_argument("--seed", type=int, default=SEED)
+    parser.add_argument("--output_dir", type=str, default=OUTPUT_DIR)
+    return parser.parse_args()
 
 
 def _print_table(summary: pd.DataFrame, lrt_times: dict[str, float]) -> bool:
@@ -83,12 +93,20 @@ def _print_table(summary: pd.DataFrame, lrt_times: dict[str, float]) -> bool:
 def main():
     from ide.evaluation.runner import headline_experiment
 
-    print(f"Running headline experiment: N={N_TRIALS} trials, seed={SEED}")
-    print("This will take a few minutes...\n")
+    args = _parse_args()
+    n_trials = args.n_trials
+    seed = args.seed
+    output_dir = args.output_dir
 
-    df = headline_experiment(n_trials=N_TRIALS, seed=SEED, output_dir=OUTPUT_DIR)
+    print(f"Running headline experiment: N={n_trials} trials, seed={seed}")
+    if n_trials < 200:
+        print("  [smoke test mode — use N>=500 for paper results]\n")
+    else:
+        print("  This will take several minutes...\n")
 
-    summary_path = os.path.join(OUTPUT_DIR, "summary_table.csv")
+    df = headline_experiment(n_trials=n_trials, seed=seed, output_dir=output_dir)
+
+    summary_path = os.path.join(output_dir, "summary_table.csv")
     summary = pd.read_csv(summary_path)
 
     lrt_rows = summary[(summary["method"] == "LRT") & (summary["scenario"] != "control")]
@@ -96,9 +114,9 @@ def main():
 
     passes = _print_table(summary, lrt_times)
 
-    _plot_figures(df, OUTPUT_DIR)
+    _plot_figures(df, output_dir)
 
-    _write_results_md(summary, lrt_times, passes, OUTPUT_DIR)
+    _write_results_md(summary, lrt_times, passes, output_dir)
 
     return 0 if passes else 1
 

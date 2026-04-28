@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "cobalt-sentinel: SS-CBD Sequential Semantic Cosine Behavioral Distance"
+abstract: >
+  Implementation of SS-CBD (Sequential Semantic Cosine Behavioral Distance),
+  a method for detecting identity drift in autonomous AI agents by combining
+  Wald's SPRT, semantic action embeddings, and tier-weighted operational risk.
+  Includes 7 baselines (LRT, Chi², JS, Hellinger, CBD, ADWIN, CUSUM) and
+  complete experimental infrastructure for reproducible evaluation.
+authors:
+  - family-names: Blain
+    given-names: Dominik
+    email: dominik@qreativelab.io
+    affiliation: QreativeLab Inc.
+repository-code: "https://github.com/dom-omg/cobalt-sentinel"
+license: Apache-2.0
+version: "1.0.0"
+date-released: "2026-04-28"
+keywords:
+  - AI safety
+  - behavioral drift detection
+  - autonomous agents
+  - sequential testing
+  - SPRT
+  - cosine distance
+  - identity drift
+preferred-citation:
+  type: article
+  title: "Identity Drift Detection in Autonomous AI Agents via Cosine Behavioral Distance"
+  authors:
+    - family-names: Blain
+      given-names: Dominik
+      email: dominik@qreativelab.io
+      affiliation: QreativeLab Inc.
+  year: 2026
+  journal: arXiv preprint
+  url: "https://arxiv.org/abs/XXXX.XXXXX"
