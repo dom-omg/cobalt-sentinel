@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "n_trials": 100,
+    "seed": 42,
+    "trace_length": 800,
+    "calib_size": 50,
+    "drift_onset": 400,
+    "drift_fraction": 0.5,
+    "datasets": {
+      "agentbench_kg": {
+        "sessions": 1364,
+        "total_actions": 9378,
+        "vocab": [
+          "get_relations",
+          "get_neighbors",
+          "intersection",
+          "get_attributes",
+          "argmax",
+          "count",
+          "argmin"
+        ],
+        "drift_targets": [
+          "count",
+          "argmax",
+          "argmin"
+        ]
+      },
+      "swe_agent": {
+        "sessions": 10,
+        "total_actions": 109,
+        "vocab": [
+          "view_file",
+          "edit_file",
+          "run_code",
+          "run_shell",
+          "create_file",
+          "search_code",
+          "list_files",
+          "delete_file",
+          "submit"
+        ],
+        "drift_targets": [
+          "run_shell",
+          "run_code"
+        ]
+      }
+    }
+  },
+  "results": {
+    "knowledge_agent": {
+      "SS-CBD": {
+        "det_rate": 68.0,
+        "fpr": 0.0,
+        "mean_det": 530.4558823529412,
+        "median_det": 525.0,
+        "std_det": 105.9777215522108
+      },
+      "LRT": {
+        "det_rate": 99.0,
+        "fpr": 3.0,
+        "mean_det": 436.24242424242425,
+        "median_det": 410.0,
+        "std_det": 85.67546127585261
+      },
+      "Hellinger": {
+        "det_rate": 83.0,
+        "fpr": 0.0,
+        "mean_det": 568.2168674698795,
+        "median_det": 552.0,
+        "std_det": 73.69589879105207
+      },
+      "CBD": {
+        "det_rate": 0.0,
+        "fpr": 0.0,
+        "mean_det": NaN,
+        "median_det": NaN,
+        "std_det": NaN
+      }
+    },
+    "coding_agent": {
+      "SS-CBD": {
+        "det_rate": 100.0,
+        "fpr": 5.0,
+        "mean_det": 408.62,
+        "median_det": 407.0,
+        "std_det": 109.60846500156819
+      },
+      "LRT": {
+        "det_rate": 100.0,
+        "fpr": 100.0,
+        "mean_det": 52.43,
+        "median_det": 55.0,
+        "std_det": 31.890830970672432
+      },
+      "Hellinger": {
+        "det_rate": 56.00000000000001,
+        "fpr": 1.0,
+        "mean_det": 578.375,
+        "median_det": 564.0,
+        "std_det": 97.1943124622012
+      },
+      "CBD": {
+        "det_rate": 0.0,
+        "fpr": 0.0,
+        "mean_det": NaN,
+        "median_det": NaN,
+        "std_det": NaN
+      }
+    }
+  }
+}
