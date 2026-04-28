@@ -7,13 +7,13 @@ test:
 	pytest tests/ -v --cov=ide --cov-report=term-missing
 
 exp1:
-	python -m experiments.exp1_headline
+	TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 python -m experiments.exp1_headline
 
 exp2:
-	python -m experiments.exp2_ablations
+	TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 python -m experiments.exp2_ablations
 
 exp3:
-	python -m experiments.exp3_adversarial
+	TRANSFORMERS_OFFLINE=1 HF_DATASETS_OFFLINE=1 python -m experiments.exp3_adversarial
 
 all: test exp1 exp2 exp3
 
