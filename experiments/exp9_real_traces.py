@@ -83,6 +83,16 @@ def parse_agentbench_kg() -> list[list[str]]:
     return sessions
 
 
+def parse_sailplane_coding() -> list[list[str]]:
+    """Parse sailplane/swe-agent-trajs coding sessions (N=400, edit_file dominant)."""
+    path = DATA_DIR / "sailplane_swe" / "sessions.json"
+    if not path.exists():
+        return []
+    with open(path) as f:
+        data = json.load(f)
+    return [item["acts"] for item in data if len(item["acts"]) >= 3]
+
+
 def parse_swe_agent() -> list[list[str]]:
     """Returns list of sessions from .traj files."""
     sessions: list[list[str]] = []
@@ -466,8 +476,8 @@ def main() -> None:
         "KnowledgeAgent", kg_sessions, kg_drift_targets, kg_vocab
     )
 
-    # --- Archetype 2: Coding/Security Agent (SWE-agent) ---
-    print("\n[2/2] Loading SWE-agent sessions...")
+    # --- Archetype 2: Coding/Security Agent (SWE-agent CTF, N=10) ---
+    print("\n[2/3] Loading SWE-agent CTF sessions (N=10, run_shell dominant)...")
     swe_sessions = parse_swe_agent()
     print(f"  Sessions: {len(swe_sessions)}, total actions: {sum(len(s) for s in swe_sessions)}")
     swe_vocab = ["view_file", "edit_file", "run_code", "run_shell",
@@ -478,6 +488,17 @@ def main() -> None:
 
     swe_results = evaluate_archetype(
         "CodingAgent", swe_sessions, swe_drift_targets, swe_vocab
+    )
+
+    # --- Archetype 3: SWE-bench Coding Agent (sailplane, N=400, edit_file dominant) ---
+    print("\n[3/3] Loading sailplane SWE-bench coding sessions (N=400, edit_file dominant)...")
+    coding_sessions = parse_sailplane_coding()
+    print(f"  Sessions: {len(coding_sessions)}, total actions: {sum(len(s) for s in coding_sessions)}")
+    print(f"  Vocab ({len(swe_vocab)}): {swe_vocab}")
+    print(f"  Drift targets: {swe_drift_targets}")
+
+    coding_results = evaluate_archetype(
+        "CodingAgent_sailplane", coding_sessions, swe_drift_targets, swe_vocab
     )
 
     # --- Print results ---
@@ -496,7 +517,17 @@ def main() -> None:
                   f"{r['mean_det']:>7.1f}  {r['median_det']:>8.1f}  {sp_str:>14}")
 
     print_table("Knowledge-Retrieval Agent (AgentBench KG)", kg_results)
-    print_table("Coding/Security Agent (SWE-agent)", swe_results)
+    print_table("Coding/Security Agent — CTF (SWE-agent, N=10)", swe_results)
+    print_table("Coding/Security Agent — SWE-bench (sailplane, N=400)", coding_results)
+
+    # --- Finding #2 validation ---
+    print("\n" + "=" * 70)
+    print("FINDING #2 VALIDATION (LRT FPR on coding agents)")
+    print("=" * 70)
+    print(f"  LRT FPR — CTF sessions (run_shell 45%):       {swe_results['LRT']['fpr']:.1f}%")
+    print(f"  SS-CBD FPR — CTF sessions:                    {swe_results['SS-CBD']['fpr']:.1f}%")
+    print(f"  LRT FPR — SWE-bench coding (run_shell 4%):   {coding_results['LRT']['fpr']:.1f}%")
+    print(f"  SS-CBD FPR — SWE-bench coding:                {coding_results['SS-CBD']['fpr']:.1f}%")
 
     # --- Save results ---
     output = {
@@ -510,16 +541,25 @@ def main() -> None:
                     "total_actions": sum(len(s) for s in kg_sessions),
                     "vocab": kg_vocab, "drift_targets": kg_drift_targets,
                 },
-                "swe_agent": {
+                "swe_agent_ctf": {
                     "sessions": len(swe_sessions),
                     "total_actions": sum(len(s) for s in swe_sessions),
                     "vocab": swe_vocab, "drift_targets": swe_drift_targets,
+                    "note": "CTF sessions only — run_shell dominant (45%)",
+                },
+                "swe_coding_sailplane": {
+                    "sessions": len(coding_sessions),
+                    "total_actions": sum(len(s) for s in coding_sessions),
+                    "vocab": swe_vocab, "drift_targets": swe_drift_targets,
+                    "source": "sailplane/swe-agent-trajs (HuggingFace)",
+                    "note": "SWE-bench coding — edit_file dominant (31%), run_shell 4%",
                 },
             },
         },
         "results": {
             "knowledge_agent": kg_results,
-            "coding_agent": swe_results,
+            "coding_agent_ctf": swe_results,
+            "coding_agent_swebench": coding_results,
         },
     }
     out_path = OUTPUT_DIR / "RESULTS_EXP9.json"
@@ -528,18 +568,18 @@ def main() -> None:
 
     # --- Markdown report ---
     md_lines = [
-        "# EXP9: Real Agent Trace Evaluation",
+        "# EXP9: Real Agent Trace Evaluation (Extended)",
         "",
-        f"**N={N_TRIALS} trials, seed={SEED}. Real traces from published benchmark datasets.**",
+        f"**N={N_TRIALS} trials, seed={SEED}. Three real agent archetypes.**",
         "",
         "## Datasets",
         "",
-        f"- **AgentBench KG** (Zheng et al., 2023): {len(kg_sessions)} sessions, "
-        f"{sum(len(s) for s in kg_sessions)} total actions. "
-        "Real GPT-4 knowledge-graph traversal traces.",
-        f"- **SWE-agent** (Yang et al., 2024): {len(swe_sessions)} sessions, "
-        f"{sum(len(s) for s in swe_sessions)} total actions. "
-        "Real Claude/GPT software-engineering + CTF traces.",
+        f"- **AgentBench KG** (Liu et al., ICLR 2024): {len(kg_sessions)} sessions, "
+        f"{sum(len(s) for s in kg_sessions)} total actions. GPT-4 KG traversal.",
+        f"- **SWE-agent CTF** (Yang et al., NeurIPS 2024): {len(swe_sessions)} sessions, "
+        f"{sum(len(s) for s in swe_sessions)} total actions. CTF challenges. run_shell dominant (~45%).",
+        f"- **SWE-bench Coding** (sailplane/swe-agent-trajs, HuggingFace): {len(coding_sessions)} sessions, "
+        f"{sum(len(s) for s in coding_sessions)} total actions. edit_file dominant (~31%), run_shell ~4%.",
         "",
         "## Results",
         "",
@@ -547,7 +587,8 @@ def main() -> None:
 
     for arch_name, res in [
         ("Knowledge-Retrieval Agent (AgentBench KG)", kg_results),
-        ("Coding/Security Agent (SWE-agent)", swe_results),
+        ("Coding/Security CTF (SWE-agent, N=10)", swe_results),
+        ("SWE-bench Coding (sailplane, N=400)", coding_results),
     ]:
         lrt_mean = res["LRT"]["mean_det"]
         md_lines += [
@@ -577,6 +618,7 @@ def main() -> None:
         "- Drift injection: 50% of post-onset actions replaced with drift-target distribution.",
         f"- Drift onset at action {DRIFT_ONSET} of {TRACE_LENGTH}-action trace.",
         "- FPR measured on unmodified (no drift injection) traces.",
+        "- sailplane sessions sourced from sailplane/swe-agent-trajs (HuggingFace, Claude-3.5-Sonnet runs).",
         "",
         f"*Generated by `python -m experiments.exp9_real_traces`, seed={SEED}, N={N_TRIALS}.*",
     ]

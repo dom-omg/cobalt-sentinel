@@ -1,0 +1,133 @@
+{
+  "generated": "2026-04-28",
+  "purpose": "Real LLM agent tool-call/action trace datasets for behavioral drift detection research",
+  "total_sessions": 2383,
+  "total_action_observations": 15181,
+  "datasets": [
+    {
+      "name": "ToolBench (G1/G2/G3 sample)",
+      "source": "https://github.com/OpenBMB/ToolBench",
+      "paper": "ToolLLM: Facilitating LLMs to Master 16000+ Real-world APIs (2023)",
+      "agent": "ChatGPT (gpt-3.5-turbo) with DFS decision tree search",
+      "format": "JSON per session, fields: win, tree, forward_args, compare_candidates, answer_generation",
+      "action_field": "answer_generation.query_count (total API calls), answer_generation.chain (full message chain)",
+      "task_type": "REST API tool use (16K+ real-world APIs across categories: weather, finance, travel, etc.)",
+      "directories": ["toolbench_g1", "toolbench_g2", "toolbench_g3"],
+      "sessions": 15,
+      "action_observations": 348,
+      "notes": "G1=single-tool, G2=multi-tool same category, G3=multi-tool cross-category. Full dataset: 126,486 instances on Google Drive (auth required). This is the data_example subset.",
+      "full_dataset_url": "https://drive.google.com/drive/folders/1TysbSWYpP8EioFu9xPJtpbJZMLLmwAmL",
+      "key_schema": {
+        "win": "bool - task success",
+        "answer_generation.query_count": "int - number of API calls made",
+        "answer_generation.chain": "list of {role, content} - full conversation with tool calls",
+        "tree": "decision tree of explored paths"
+      }
+    },
+    {
+      "name": "AgentBench Knowledge Graph",
+      "source": "https://github.com/THUDM/AgentBench",
+      "paper": "AgentBench: Evaluating LLMs as Agents (2023)",
+      "agent": "Various LLMs (GPT-4, ChatGPT, etc.)",
+      "format": "JSON array, fields: question, qid, source, entities, s_expression, actions, answer",
+      "action_field": "actions (list of SPARQL-like graph traversal operations)",
+      "task_type": "Knowledge graph question answering (Freebase SPARQL traversal)",
+      "directories": ["agentbench_kg"],
+      "files": {
+        "kg_rl_all.json": {"sessions": 1214, "actions": 8354, "note": "full RL training set"},
+        "std.json": {"sessions": 150, "actions": 1024, "note": "standard eval set"},
+        "dev.json": {"sessions": 20, "actions": "~120", "note": "dev set"},
+        "dbbench_standard.jsonl": {"note": "DB task specs (not trajectories - SQL text2query tasks)"},
+        "dbbench_dev.jsonl": {"note": "DB task specs (not trajectories)"}
+      },
+      "sessions": 1384,
+      "action_observations": 9378,
+      "key_schema": {
+        "actions": "list of strings like get_relations(entity_id), get_neighbors(entity_id, relation), count(#ref)",
+        "question": "natural language question",
+        "answer": "ground truth answer"
+      }
+    },
+    {
+      "name": "SWE-agent Demonstrations",
+      "source": "https://github.com/SWE-agent/SWE-agent (fork of princeton-nlp/SWE-agent)",
+      "paper": "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering (2024)",
+      "agent": "Claude/GPT-4 with ACI (Agent-Computer Interface)",
+      "format": ".traj (JSON) with 'history' array of {role, content, action, thought, tool_calls}",
+      "action_field": "history[].action + history[].tool_calls",
+      "task_type": "Software engineering (bug fixes) + CTF security challenges",
+      "directories": [
+        "swe_agent/coding",
+        "swe_agent/ctf_crypto",
+        "swe_agent/ctf_forensics",
+        "swe_agent/ctf_misc",
+        "swe_agent/ctf_pwn",
+        "swe_agent/ctf_rev",
+        "swe_agent/ctf_web"
+      ],
+      "sessions": 13,
+      "action_observations": 267,
+      "task_subtypes": {
+        "coding": ["function_calling_simple", "str_replace_demo", "marshmallow bug fix", "HumanEvalFix"],
+        "ctf_crypto": ["BabyEncryption", "BabyTimeCapsule", "eps", "katy"],
+        "ctf_other": ["pwn/warmup", "web/i_got_id_demo", "forensics/flash", "rev/rock", "misc/networking_1"]
+      },
+      "key_schema": {
+        "history": "list of messages, each with role (system/user/assistant/tool), content, action string, thought string",
+        "tool_calls": "list of {function: {name, arguments}}"
+      }
+    },
+    {
+      "name": "ReAct FEVER",
+      "source": "https://github.com/ysymyth/ReAct",
+      "paper": "ReAct: Synergizing Reasoning and Acting in Language Models (2022)",
+      "agent": "PaLM/GPT-3 with ReAct prompting",
+      "format": "Jupyter notebook with inline execution output - interleaved Thought/Action/Observation",
+      "action_field": "Action N: Search[...] | Lookup[...] | Finish[...]",
+      "task_type": "Fact verification (FEVER dataset - SUPPORTS/REFUTES/NEI classification)",
+      "directories": ["react_traces"],
+      "file": "react_traces/FEVER.ipynb",
+      "sessions": 491,
+      "action_observations": 1251,
+      "parse_hint": "Regex 'Action \\d+: (\\w+)' on notebook output cells",
+      "key_schema": {
+        "pattern": "Thought N: [reasoning]\\nAction N: [Search|Lookup|Finish][query]\\nObservation N: [result]"
+      }
+    },
+    {
+      "name": "ReAct WebShop",
+      "source": "https://github.com/ysymyth/ReAct",
+      "paper": "ReAct: Synergizing Reasoning and Acting in Language Models (2022)",
+      "agent": "GPT-3/PaLM with ReAct prompting",
+      "format": "Jupyter notebook with inline execution output",
+      "action_field": "Action: search[...] | click[...] | think[...] | reset",
+      "task_type": "E-commerce shopping task (WebShop environment - find products matching description)",
+      "directories": ["react_traces"],
+      "file": "react_traces/WebShop.ipynb",
+      "sessions": 500,
+      "action_observations": 3937,
+      "action_breakdown": {"reset": 500, "search": 523, "think": 1089, "click": 1822, "exit": 3},
+      "parse_hint": "Regex '^Action: (\\w+)' (multiline) on notebook output cells (cell index 7)",
+      "key_schema": {
+        "pattern": "Action: [action_type][args]\\nObservation: [web page content]"
+      }
+    }
+  ],
+  "what_was_NOT_found": {
+    "WebArena trajectories": "Only task specs (config_files/test.raw.json), no actual execution logs in repo",
+    "AgentBench OS interaction": "Only task definitions (dev.json, training.json), not agent execution traces",
+    "ToolBench full dataset": "126K sessions available but on Google Drive (auth required). Only data_example (15 sessions) is on GitHub",
+    "SWE-bench evaluation runs": "No pre-recorded trajectories committed - generated at eval time",
+    "HuggingFace datasets": "auth required for direct API access"
+  },
+  "scale_notes": {
+    "current_total": "2383 sessions / 15181 actions - exceeds 2000 action observation target",
+    "to_get_more": "ToolBench full dataset (469K API calls) requires Google Drive download: https://drive.google.com/drive/folders/1TysbSWYpP8EioFu9xPJtpbJZMLLmwAmL",
+    "best_for_drift_detection": [
+      "ToolBench G1/G2/G3: clear tool-call sequences, structured DFS trees, success/fail labels",
+      "SWE-agent .traj: richest per-step data (thought + action + observation + tool_calls dict)",
+      "ReAct WebShop: 500 complete shopping episodes, 4 action types, high volume",
+      "AgentBench KG: 1214 sessions with named graph traversal ops"
+    ]
+  }
+}

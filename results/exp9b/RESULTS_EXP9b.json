@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "n_trials": 100,
+    "seed": 42,
+    "trace_length": 800,
+    "calib_size": 50,
+    "drift_onset": 400,
+    "finding2_status": "CONFIRMED_PARTIAL"
+  },
+  "results": {
+    "kg": {
+      "summary": {
+        "SS-CBD": {
+          "det_rate": 54.0,
+          "fpr": 0.0,
+          "mean_det": 533.574074074074,
+          "median_det": 522.0
+        },
+        "LRT": {
+          "det_rate": 99.0,
+          "fpr": 3.0,
+          "mean_det": 436.24242424242425,
+          "median_det": 410.0
+        },
+        "CBD": {
+          "det_rate": 0.0,
+          "fpr": 0.0,
+          "mean_det": NaN,
+          "median_det": NaN
+        }
+      },
+      "kl": 0.07751310991513845,
+      "dominant_target_freq": 0.05587545318831308
+    },
+    "swe_ctf": {
+      "summary": {
+        "SS-CBD": {
+          "det_rate": 100.0,
+          "fpr": 100.0,
+          "mean_det": 175.68,
+          "median_det": 166.0
+        },
+        "LRT": {
+          "det_rate": 100.0,
+          "fpr": 100.0,
+          "mean_det": 52.43,
+          "median_det": 55.0
+        },
+        "CBD": {
+          "det_rate": 0.0,
+          "fpr": 0.0,
+          "mean_det": NaN,
+          "median_det": NaN
+        }
+      },
+      "kl": 0.2119809907531614,
+      "dominant_target_freq": 0.5504587144954127,
+      "sessions": 10
+    },
+    "swe_coding": {
+      "summary": {
+        "SS-CBD": {
+          "det_rate": 100.0,
+          "fpr": 100.0,
+          "mean_det": 163.88,
+          "median_det": 126.0
+        },
+        "LRT": {
+          "det_rate": 100.0,
+          "fpr": 100.0,
+          "mean_det": 150.16,
+          "median_det": 124.5
+        },
+        "CBD": {
+          "det_rate": 1.0,
+          "fpr": 1.0,
+          "mean_det": 20.0,
+          "median_det": 20.0
+        }
+      },
+      "kl": 0.19295252484638256,
+      "dominant_target_freq": 0.20042579075425793,
+      "sessions": 400
+    }
+  }
+}
