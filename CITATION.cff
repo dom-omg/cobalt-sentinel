@@ -36,6 +36,8 @@ preferred-citation:
   year: 2026
   journal: arXiv preprint cs.AI
   notes: >
-    SS-CBD (Section 4.5) achieves 2.61x mean detection-time speedup over LRT
-    on N=500 trials, 3/4 drift scenarios. Reproducible via make exp1 seed=42.
+    SS-CBD achieves 2.61x mean detection-time speedup over LRT on N=500 trials,
+    3/4 drift scenarios (peak 5.05x financial_gradual). Case study (make exp7):
+    100% detection of slow-burn KB-poison attack at median 9 min, CBD fails 62%.
+    Reproducible via make exp1 seed=42; make exp7 seed=42.
   url: "https://github.com/dom-omg/cobalt-ai/blob/main/papers/identity_drift.md"
