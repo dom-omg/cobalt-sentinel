@@ -29,7 +29,7 @@ docker run --rm cobalt-sentinel python verify_reproduction.py
 ## Full Experiment Suite
 
 ```bash
-make all       # Tests + exp1 through exp7 (~45 min)
+make all       # Tests + exp1 through exp9 (~65 min)
 ```
 
 Individual experiments:
@@ -39,10 +39,12 @@ Individual experiments:
 | `make exp1` | §7.5 Headline | 500 | ~8 min |
 | `make exp2` | §7.7 Ablations | 300 | ~12 min |
 | `make exp3` | §7.8 Adversarial | 100 | ~5 min |
-| `make exp4` | §7.2 Quasi-real | 200 | ~10 min |
+| `make exp4` | §7.2 Markov-structured | 200 | ~10 min |
 | `make exp5` | §5.8 Lower bound | 200 | ~6 min |
 | `make exp6` | §7.5 EXP6 CIs | reuses exp1 | ~3 min |
 | `make exp7` | §7.11 Case study | 100 | ~4 min |
+| `make exp8` | §7.12 Industry baselines | 100 | ~5 min |
+| `make exp9` | §7.13 Real agent traces | 100 | ~8 min |
 
 ## Offline Mode (default)
 
