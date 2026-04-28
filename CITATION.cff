@@ -34,5 +34,8 @@ preferred-citation:
       email: dominik@qreativelab.io
       affiliation: QreativeLab Inc.
   year: 2026
-  journal: arXiv preprint
-  url: "https://arxiv.org/abs/XXXX.XXXXX"
+  journal: arXiv preprint cs.AI
+  notes: >
+    SS-CBD (Section 4.5) achieves 2.61x mean detection-time speedup over LRT
+    on N=500 trials, 3/4 drift scenarios. Reproducible via make exp1 seed=42.
+  url: "https://github.com/dom-omg/cobalt-ai/blob/main/papers/identity_drift.md"
