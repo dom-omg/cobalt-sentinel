@@ -182,7 +182,7 @@ def run_n500_control_eval(
         print(f"  EXP6 Sec7.3 scenario: {scenario.name} ...", flush=True)
         trial_seeds = rng.integers(0, 2**31, size=n_trials)
         for trial_idx, trial_seed in enumerate(trial_seeds):
-            trace = simulator.generate_trace(scenario, duration=500, seed=int(trial_seed))
+            trace = simulator.generate_trace(scenario, duration=4000, seed=int(trial_seed))
             for mname in METHODS_7_3:
                 method = _fresh_method(mname, vocab, embedder)
                 detected, det_time = run_method_on_trace(method, trace, alt_dist=scenario.drift_dist)
